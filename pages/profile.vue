@@ -1,7 +1,7 @@
 <template>
   <b-container>
     <div v-if="checkined">
-      <b-card :title="name">
+      <b-card :title="userData.name">
       <p class="card-text">
         大會編號：{{ userData.id }}<br/>
         單位：{{ userData.school }}<br/>
