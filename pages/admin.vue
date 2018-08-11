@@ -149,7 +149,20 @@ export default {
         lunchBox2: ""
       },
       stopUpdate: false,
-      config: null
+      config: {
+        lunchBox: {
+          start: "",
+          end: ""
+        },
+        dinner: {
+          start: "",
+          end: ""
+        },
+        lunchBox2: {
+          start: "",
+          end: ""
+        }
+      }
     };
   },
   created() {
@@ -161,11 +174,11 @@ export default {
     }, 5000);
   },
   methods: {
-    async getConfig(){
+    async getConfig() {
       const res = await axios.get(`/api/config`);
       this.config = res.data;
     },
-    async saveConfig(){
+    async saveConfig() {
       const res = await axios.post(`/api/config`, this.config);
     },
     dataPreProcess() {
