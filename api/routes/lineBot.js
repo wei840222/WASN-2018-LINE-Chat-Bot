@@ -128,7 +128,7 @@ function handleText(message, replyToken, source) {
                           template: {
                             type: 'buttons',
                             title: "核對報到資訊",
-                            text: `姓名：${profile.displayName}\n單位：${response.data[0].school}\nemail：${response.data[0].email}`,
+                            text: `姓名：${profile.displayName}\n單位：${response.data[0].school}\n電話/手機：${response.data[0].phone}`,
                             actions: [
                               { label: '正確', type: 'postback', data: `checkin=${response.data[0]._id}` },
                               { label: '這不是我', type: 'uri', uri: 'line://app/1597006048-DJnXQ8r2' }
