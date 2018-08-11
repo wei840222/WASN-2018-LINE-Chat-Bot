@@ -38,126 +38,131 @@ const replyText = (token, texts) => {
 // callback function to handle a single event
 function handleEvent(event) {
   switch (event.type) {
-  case 'message':
-    const message = event.message;
-    switch (message.type) {
-    case 'text':
-      return handleText(message, event.replyToken, event.source);
-    default:
-      throw new Error(`Unknown message: ${JSON.stringify(message)}`);
-    }
+    case 'message':
+      const message = event.message;
+      switch (message.type) {
+        case 'text':
+          return handleText(message, event.replyToken, event.source);
+        default:
+          throw new Error(`Unknown message: ${JSON.stringify(message)}`);
+      }
 
-  case 'postback':
-    if(event.postback.data.includes('checkin')){
-      const _id = event.postback.data.split("=")[1]
-      axios.get(`/api/person/?_id=${_id}`).then(response => {
-        if(response.data[0].checkin !== ""){
-          client.replyMessage(
-            event.replyToken,
-            {
-              type: 'text',
-              text: '已經完成報到'
-            }
-          )
-        }
-        else{
-          const now = new Date(Date.now());
-          axios.post(`/api/person/${_id}`, {
-            uid: event.source.userId,
-            checkin: now.toLocaleString("zh-TW", {
-              timeZone: "Asia/Taipei",
-              hour12: false
-            })
-          }).then(response => {
+    case 'postback':
+      if (event.postback.data.includes('checkin')) {
+        const _id = event.postback.data.split("=")[1]
+        axios.get(`/api/person/?_id=${_id}`).then(response => {
+          if (response.data[0].checkin !== "") {
             client.replyMessage(
               event.replyToken,
               {
                 type: 'text',
-                text: '報到成功！'
+                text: '已經完成報到'
               }
             )
-          })
-        }
-      })
-    }
-    return;
+          }
+          else {
+            const now = new Date(Date.now());
+            axios.post(`/api/person/${_id}`, {
+              uid: event.source.userId,
+              checkin: now.toLocaleString("zh-TW", {
+                timeZone: "Asia/Taipei",
+                hour12: false
+              })
+            }).then(response => {
+              client.replyMessage(
+                event.replyToken,
+                {
+                  type: 'text',
+                  text: '報到成功！'
+                }
+              )
+            })
+          }
+        })
+      }
+      return;
 
-  case 'follow':
-    client.getProfile(event.source.userId)
-      .then(profile => replyText(
-        event.replyToken,
-        [
-          `${profile.displayName} 您好！`,
-          `歡迎蒞臨 WASN 2018`,
-          `請點擊下方選單進行報到並查詢更多資訊`,
-        ]
-      ));
-    return;
+    case 'follow':
+      client.getProfile(event.source.userId)
+        .then(profile => replyText(
+          event.replyToken,
+          [
+            `${profile.displayName} 您好！`,
+            `歡迎蒞臨 WASN 2018`,
+            `請點擊下方選單進行報到並查詢更多資訊`,
+          ]
+        ));
+      return;
 
-  default:
-    throw new Error(`Unknown event: ${JSON.stringify(event)}`);
+    default:
+      throw new Error(`Unknown event: ${JSON.stringify(event)}`);
   }
 }
 
 function handleText(message, replyToken, source) {
   switch (message.text) {
-  case '報到':
-    client.getProfile(source.userId)
-      .then(profile => {
-        axios.get(`/api/person?name64=${Base64.encodeURI(profile.displayName)}`)
-          .then(response => {
-            if (response.data.length > 0 && response.data[0].checkin !== "") {
-              client.replyMessage(
-                replyToken,
-                {
-                  type: 'text',
-                  text: '已經完成報到'
-                }
-              )
-              return
-            }
-            else if (response.data.length > 0 && response.data[0].name == profile.displayName) {
-              client.replyMessage(
-                replyToken,
-                {
-                  type: 'template',
-                  altText: '核對報到資訊',
-                  template: {
-                    type: 'buttons',
-                    title: "核對報到資訊",
-                    text: `姓名：${profile.displayName}\n單位：${response.data[0].school}\nemail：${response.data[0].email}`,
-                    actions: [
-                      { label: '正確', type: 'postback', data: `checkin=${response.data[0]._id}` },
-                      { label: '這不是我', type: 'uri', uri: 'line://app/1597006048-DJnXQ8r2' }
-                    ]
+    case '報到':
+      client.getProfile(source.userId)
+        .then(profile => {
+          axios.get(`/api/person?uid=${profile.userId}`)
+            .then(response => {
+              if (response.data.length > 0 && response.data[0].checkin !== "") {
+                client.replyMessage(
+                  replyToken,
+                  {
+                    type: 'text',
+                    text: '已經完成報到'
                   }
-                }
-              )
-              return
-            }
-            else {
-              client.replyMessage(
-                replyToken,
-                {
-                  type: 'template',
-                  altText: '核對報到資訊',
-                  template: {
-                    type: 'buttons',
-                    title: "核對報到資訊",
-                    text: `查無${profile.displayName}的資料`,
-                    actions: [
-                      { label: '輸入個人資訊報到', type: 'uri', uri: 'line://app/1597006048-DJnXQ8r2' }
-                    ]
-                  }
-                }
-              )
-              return
-            }
-          });
-      })
-      .catch(err => console.log(err))
-  default:
-    console.log(`Message from ${replyToken}: ${message.text}`);
+                )
+                return
+              }
+              else {
+                axios.get(`/api/person?name64=${Base64.encodeURI(profile.displayName)}`)
+                  .then(response => {
+                    if (response.data.length > 0 && response.data[0].name == profile.displayName) {
+                      client.replyMessage(
+                        replyToken,
+                        {
+                          type: 'template',
+                          altText: '核對報到資訊',
+                          template: {
+                            type: 'buttons',
+                            title: "核對報到資訊",
+                            text: `姓名：${profile.displayName}\n單位：${response.data[0].school}\n電話/手機：${response.data[0].phone}`,
+                            actions: [
+                              { label: '正確', type: 'postback', data: `checkin=${response.data[0]._id}` },
+                              { label: '這不是我', type: 'uri', uri: 'line://app/1597006048-DJnXQ8r2' }
+                            ]
+                          }
+                        }
+                      )
+                      return
+                    }
+                    else {
+                      client.replyMessage(
+                        replyToken,
+                        {
+                          type: 'template',
+                          altText: '核對報到資訊',
+                          template: {
+                            type: 'buttons',
+                            title: "核對報到資訊",
+                            text: `查無${profile.displayName}的資料`,
+                            actions: [
+                              { label: '輸入個人資訊報到', type: 'uri', uri: 'line://app/1597006048-DJnXQ8r2' }
+                            ]
+                          }
+                        }
+                      )
+                      return
+                    }
+                  });
+              }
+            })
+        })
+        .catch(err => console.log(err))
+    default:
+      console.log(`Message from ${replyToken}: ${message.text}`);
   }
 }
 
