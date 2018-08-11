@@ -54,7 +54,7 @@
         <b-form-input type="datetime" v-model="data.item.checkin" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
       </template>
       <template slot="vegetarian" slot-scope="data">
-        {{ vegetarian ? '素' : '葷' }}
+        {{ data.item.vegetarian ? '素' : '葷' }}
       </template>
       <template slot="lunchBox" slot-scope="data">
         <div v-if="data.item.lunchBox === 'notNeed'">不需要</div>
