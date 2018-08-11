@@ -3,6 +3,8 @@ const router = Router()
 var bodyParser = require('body-parser')
 var Base64 = require('js-base64').Base64;
 var mongoose = require('mongoose');
+const axios = require('axios')
+axios.defaults.baseURL = process.env.BASE_URL
 
 mongoose.connect(process.env.MONGOLAB_URI);
 var Schema = mongoose.Schema;
@@ -102,14 +104,28 @@ router.get('/person/:_id', jsonParser, function (req, res) {
           return
         }
       }
-      for (var att in req.query) {
-        doc[att] = req.query[att]
-      }
-      doc.name64 = Base64.encodeURI(doc.name)
-      doc.save(function (err, doc) {
-        if (err) res.send(500, err);
-        else res.json(doc);
-      });
+      axios.get(`/api/config`).then(response => {
+        for (var att in req.query) {
+          if (att === 'lunchBox' && (req.query[att] < response.data[0].lunchBox.start || req.query[att] > response.data[0].lunchBox.end)) {
+            res.status(403).send('尚未開放領取便當！')
+            return
+          }
+          if (att === 'dinner' && (req.query[att] < response.data[0].dinner.start || req.query[att] > response.data[0].dinner.end)) {
+            res.status(403).send('尚未開放參加晚宴！')
+            return
+          }
+          if (att === 'lunchBox2' && (req.query[att] < response.data[0].lunchBox2.start || req.query[att] > response.data[0].lunchBox2.end)) {
+            res.status(403).send('尚未開放領取餐盒！')
+            return
+          }
+          doc[att] = req.query[att]
+        }
+        doc.name64 = Base64.encodeURI(doc.name)
+        doc.save(function (err, doc) {
+          if (err) res.send(500, err);
+          else res.json(doc);
+        });
+      })
     }
   });
 });
