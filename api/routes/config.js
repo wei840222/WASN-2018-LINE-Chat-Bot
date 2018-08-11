@@ -58,10 +58,8 @@ router.post('/config', jsonParser, function (req, res) {
         Config.findById(data[0]._id, function (err, doc) {
           if (err) res.send(500, err);
           else {
-            doc = {
-              lunchBox: req.body.lunchBox || {},
-              dinner: req.body.dinner || {},
-              lunchBox2: req.body.lunchBox2 || {}
+            for (var att in req.body) {
+              doc[att] = req.body[att]
             }
             doc.save(function (err, doc) {
               if (err) res.send(500, err);
