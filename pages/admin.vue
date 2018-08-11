@@ -8,28 +8,29 @@
           <b-nav-item v-b-modal.add>新增</b-nav-item>
           <b-modal id="add" title="新增" ok-only="true" ok-title="新增" @ok="add" @hidden="claerAddUser">
             <form>
-              <b-form-input type="text" placeholder="ID" v-model="addUser.id"></b-form-input>
-              <b-form-input type="text" placeholder="姓名" v-model="addUser.name"></b-form-input>
-              <b-form-input type="text" placeholder="單位" v-model="addUser.school"></b-form-input>
-              <b-form-input type="text" placeholder="電話/手機" v-model="addUser.phone"></b-form-input>
+              大會編號：<b-form-input type="text" v-model="addUser.id"></b-form-input><br/>
+              姓名：<b-form-input type="text" v-model="addUser.name"></b-form-input><br/>
+              單位/學校：<b-form-input type="text" v-model="addUser.school"></b-form-input><br/>
+              電話/手機：<b-form-input type="text" v-model="addUser.phone"></b-form-input><br/>
+              葷/素：
               <b-form-radio-group id="modal-vegetarian" v-model="addUser.vegetarian">
                 <b-form-radio value=false>葷</b-form-radio>
                 <b-form-radio value=true>素</b-form-radio>
-              </b-form-radio-group>
-              便當<br/>
+              </b-form-radio-group><br/>
+              便當：
               <b-form-radio-group id="modal-lunchBox" v-model="addUser.lunchBox">
-                <b-form-radio value=true>需要</b-form-radio>
-                <b-form-radio value=false>不需要</b-form-radio>
-              </b-form-radio-group>
-              晚宴<br/>
+                <b-form-radio value="">需要</b-form-radio>
+                <b-form-radio value="notNeed">不需要</b-form-radio>
+              </b-form-radio-group><br/>
+              晚宴：
               <b-form-radio-group id="modal-dinner" v-model="addUser.dinner">
-                <b-form-radio value=true>參加</b-form-radio>
-                <b-form-radio value=false>不參加</b-form-radio>
-              </b-form-radio-group>
-              餐盒<br/>
+                <b-form-radio value="">參加</b-form-radio>
+                <b-form-radio value="notNeed">不參加</b-form-radio>
+              </b-form-radio-group><br/>
+              餐盒：
               <b-form-radio-group id="modal-lunchBox2" v-model="addUser.lunchBox2">
-                <b-form-radio value=true>需要</b-form-radio>
-                <b-form-radio value=false>不需要</b-form-radio>
+                <b-form-radio value="">需要</b-form-radio>
+                <b-form-radio value="notNeed">不需要</b-form-radio>
               </b-form-radio-group>
             </form>
           </b-modal>
@@ -89,7 +90,7 @@ export default {
       items: res.data,
       fields: {
         id: {
-          label: "ID",
+          label: "大會編號",
           sortable: true
         },
         name: {
@@ -107,7 +108,8 @@ export default {
           label: "報到"
         },
         vegetarian: {
-          label: "葷/素"
+          label: "葷/素",
+          sortable: true
         },
         lunchBox: {
           label: "便當"
@@ -129,9 +131,9 @@ export default {
         school: "",
         phone: "",
         vegetarian: false,
-        lunchBox: true,
-        dinner: true,
-        lunchBox2: true
+        lunchBox: "",
+        dinner: "",
+        lunchBox2: ""
       },
       stopUpdate: false
     };
@@ -151,18 +153,12 @@ export default {
         school: "",
         phone: "",
         vegetarian: false,
-        lunchBox: true,
-        dinner: true,
-        lunchBox2: true
+        lunchBox: "",
+        dinner: "",
+        lunchBox2: ""
       };
     },
     async add() {
-      if (this.addUser.lunchBox) this.addUser.lunchBox = "";
-      else this.addUser.lunchBox = "notNeed";
-      if (this.addUser.dinner) this.addUser.dinner = "";
-      else this.addUser.dinner = "notNeed";
-      if (this.addUser.lunchBox2) this.addUser.lunchBox2 = "";
-      else this.addUser.lunchBox2 = "notNeed";
       const res = await axios.post(`/api/person`, this.addUser);
       if (res.statusText === "OK") {
         this.update();
