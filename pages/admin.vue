@@ -11,7 +11,26 @@
               <b-form-input type="text" placeholder="ID" v-model="addUser.id"></b-form-input>
               <b-form-input type="text" placeholder="姓名" v-model="addUser.name"></b-form-input>
               <b-form-input type="text" placeholder="單位" v-model="addUser.school"></b-form-input>
-              <b-form-input type="text" placeholder="e-mail" v-model="addUser.email"></b-form-input>
+              <b-form-input type="text" placeholder="電話/手機" v-model="addUser.phone"></b-form-input>
+              <b-form-radio-group id="modal-vegetarian" v-model="addUser.vegetarian">
+                <b-form-radio value=false>葷</b-form-radio>
+                <b-form-radio value=true>素</b-form-radio>
+              </b-form-radio-group>
+              便當<br/>
+              <b-form-radio-group id="modal-lunchBox" v-model="addUser.lunchBox">
+                <b-form-radio value=true>需要</b-form-radio>
+                <b-form-radio value=false>不需要</b-form-radio>
+              </b-form-radio-group>
+              晚宴<br/>
+              <b-form-radio-group id="modal-dinner" v-model="addUser.dinner">
+                <b-form-radio value=true>參加</b-form-radio>
+                <b-form-radio value=false>不參加</b-form-radio>
+              </b-form-radio-group>
+              餐盒<br/>
+              <b-form-radio-group id="modal-lunchBox2" v-model="addUser.lunchBox2">
+                <b-form-radio value=true>需要</b-form-radio>
+                <b-form-radio value=false>不需要</b-form-radio>
+              </b-form-radio-group>
             </form>
           </b-modal>
         </b-navbar-nav>
@@ -33,11 +52,20 @@
       <template slot="checkin" slot-scope="data">
         <b-form-input type="datetime" v-model="data.item.checkin" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
       </template>
+      <template slot="vegetarian" slot-scope="data">
+        {{ vegetarian ? '素' : '葷' }}
+      </template>
       <template slot="lunchBox" slot-scope="data">
-        <b-form-input type="datetime" v-model="data.item.lunchBox" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
+        <div v-if="data.item.lunchBox === 'notNeed'">不需要</div>
+        <b-form-input v-else type="datetime" v-model="data.item.lunchBox" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
       </template>
       <template slot="dinner" slot-scope="data">
-        <b-form-input type="datetime" v-model="data.item.dinner" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
+        <div v-if="data.item.dinner === 'notNeed'">不需要</div>
+        <b-form-input v-else type="datetime" v-model="data.item.dinner" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
+      </template>
+      <template slot="lunchBox2" slot-scope="data">
+        <div v-if="data.item.lunchBox2 === 'notNeed'">不需要</div>
+        <b-form-input v-else type="datetime" v-model="data.item.lunchBox2" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
       </template>
       <template slot="edit" slot-scope="data">
         <b-button-group>
@@ -72,17 +100,23 @@ export default {
           label: "單位",
           sortable: true
         },
-        email: {
-          label: "e-amil"
+        phone: {
+          label: "電話/手機"
         },
         checkin: {
           label: "報到"
+        },
+        vegetarian: {
+          label: "葷/素"
         },
         lunchBox: {
           label: "便當"
         },
         dinner: {
           label: "晚宴"
+        },
+        lunchBox2: {
+          label: "餐盒"
         },
         edit: {
           label: ""
@@ -93,7 +127,11 @@ export default {
         id: "",
         name: "",
         school: "",
-        email: ""
+        phone: "",
+        vegetarian: false,
+        lunchBox: true,
+        dinner: true,
+        lunchBox2: true
       },
       stopUpdate: false
     };
@@ -111,19 +149,32 @@ export default {
         id: "",
         name: "",
         school: "",
-        email: ""
+        phone: "",
+        vegetarian: false,
+        lunchBox: true,
+        dinner: true,
+        lunchBox2: true
       };
     },
     async add() {
+      if (this.addUser.lunchBox) this.addUser.lunchBox = "";
+      else this.addUser.lunchBox = "notNeed";
+      if (this.addUser.dinner) this.addUser.dinner = "";
+      else this.addUser.dinner = "notNeed";
+      if (this.addUser.lunchBox2) this.addUser.lunchBox2 = "";
+      else this.addUser.lunchBox2 = "notNeed";
       const res = await axios.post(`/api/person`, this.addUser);
       if (res.statusText === "OK") {
         this.update();
       }
     },
     async save(data) {
-      const res = await axios.get(
-        `/api/person/${data._id}?checkin=${data.checkin}&lunchBox=${data.lunchBox}&dinner=${data.dinner}`
-      );
+      const res = await axios.post(`/api/person/${data._id}`, {
+        checkin: data.checkin,
+        lunchBox: data.lunchBox,
+        dinner: data.dinner,
+        lunchBox2: data.lunchBox2
+      });
       if (res.statusText === "OK") {
         this.update();
       }
