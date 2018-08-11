@@ -59,11 +59,11 @@ router.post('/person/:_id', jsonParser, function (req, res) {
   else {
     Person.findById(req.params._id, function (err, doc) {
       if (err) res.send(500, err);
-      else{
-        for(var att in req.body){
+      else {
+        for (var att in req.body) {
           doc[att] = req.body[att]
         }
-        doc.name64=Base64.encodeURI(doc.name)
+        doc.name64 = Base64.encodeURI(doc.name)
         doc.save(function (err, doc) {
           if (err) res.send(500, err);
           else res.json(doc);
@@ -74,7 +74,7 @@ router.post('/person/:_id', jsonParser, function (req, res) {
 });
 
 router.delete('/person/:_id', jsonParser, function (req, res) {
-  Person.findByIdAndRemove(req.params._id, function (err, result){
+  Person.findByIdAndRemove(req.params._id, function (err, result) {
     if (err) res.send(500, err);
     else res.send(200);
   })
@@ -83,11 +83,16 @@ router.delete('/person/:_id', jsonParser, function (req, res) {
 router.get('/person/:_id', jsonParser, function (req, res) {
   Person.findById(req.params._id, function (err, doc) {
     if (err) res.send(500, err);
-    else{
-      for(var att in req.query){
-        doc[att] = req.query[att]
+    else {
+      for (var att in req.query) {
+        if (att === 'dinner' && doc[att] !== '')
+          res.send(403, '已經參加過晚宴！')
+        else if (att === 'lunchBox' && doc[att] !== '')
+          res.send(403, '已經領過便當！')
+        else
+          doc[att] = req.query[att]
       }
-      doc.name64=Base64.encodeURI(doc.name)
+      doc.name64 = Base64.encodeURI(doc.name)
       doc.save(function (err, doc) {
         if (err) res.send(500, err);
         else res.json(doc);
