@@ -55,16 +55,17 @@ router.post('/config', jsonParser, function (req, res) {
         });
       }
       else {
-        data[0] = {
-          lunchBox: req.body.lunchBox || {},
-          dinner: req.body.dinner || {},
-          lunchBox2: req.body.lunchBox2 || {}
-        }
-        data[0].save(function (err, newData) {
-          if (err) res.send(500, err);
-          else res.json(newData);
-          console.log(newData);
-        });
+        Config.findByIdAndUpdate(data[0]._id, {
+          $addToSet: {
+            lunchBox: req.body.lunchBox || {},
+            dinner: req.body.dinner || {},
+            lunchBox2: req.body.lunchBox2 || {}
+          }, function(err, model) {
+            if (err) res.send(500, err);
+            else res.json(model);
+            console.log(model);
+          }
+        })
       }
     });
   }
