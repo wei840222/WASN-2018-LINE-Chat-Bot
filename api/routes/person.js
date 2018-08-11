@@ -91,15 +91,15 @@ router.get('/person/:_id', jsonParser, function (req, res) {
     if (err) res.send(500, err);
     else {
       for (var att in req.query) {
-        if (att === 'lunchBox' && (doc[att] != '' || doc[att] != 'notNeed')) {
+        if (att === 'lunchBox' && doc[att] !== '' && doc[att] !== 'notNeed') {
           res.status(403).send('已經領過便當！')
           return
         }
-        if (att === 'dinner' && (doc[att] != '' || doc[att] != 'notNeed')) {
+        if (att === 'dinner' && doc[att] !== '' && doc[att] !== 'notNeed') {
           res.status(403).send('已經參加過晚宴！')
           return
         }
-        if (att === 'lunchBox2' && (doc[att] != '' || doc[att] != 'notNeed')) {
+        if (att === 'lunchBox2' && doc[att] !== '' && doc[att] !== 'notNeed') {
           res.status(403).send('已經領過餐盒！')
           return
         }
