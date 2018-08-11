@@ -145,7 +145,7 @@ export default {
   },
   methods: {
     dataPreProcess() {
-      this.data.forEach(element => {
+      this.items.forEach(element => {
         if (element.lunchBox === "notNeed") element.lunchBox = "不需要";
         if (element.dinner === "notNeed") element.dinner = "不參加";
         if (element.lunchBox2 === "notNeed") element.lunchBox2 = "不需要";
