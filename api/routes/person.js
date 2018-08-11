@@ -85,12 +85,17 @@ router.get('/person/:_id', jsonParser, function (req, res) {
     if (err) res.send(500, err);
     else {
       for (var att in req.query) {
-        if (att === 'dinner' && doc[att] !== '')
+        if (att === 'dinner' && doc[att] !== '') {
           res.status(403).send('已經參加過晚宴！')
-        else if (att === 'lunchBox' && doc[att] !== '')
+          return
+        }
+        if (att === 'lunchBox' && doc[att] !== '') {
           res.status(403).send('已經領過便當！')
-        else
-          doc[att] = req.query[att]
+          return
+        }
+      }
+      for (var att in req.query) {
+        doc[att] = req.query[att]
       }
       doc.name64 = Base64.encodeURI(doc.name)
       doc.save(function (err, doc) {
