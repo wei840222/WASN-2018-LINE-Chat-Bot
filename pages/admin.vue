@@ -6,7 +6,7 @@
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav>
           <b-nav-item v-b-modal.add>新增</b-nav-item>
-          <b-modal id="add" title="新增" ok-only="true" ok-title="新增" @ok="add" @hidden="claerAddUser">
+          <b-modal id="add" title="新增" ok-only="true" ok-title="新增" @ok="add" @shown="claerAddUser">
             <form>
               大會編號：<b-form-input type="text" v-model="addUser.id"></b-form-input><br/>
               姓名：<b-form-input type="text" v-model="addUser.name"></b-form-input><br/>
@@ -32,6 +32,22 @@
                 <b-form-radio value="">需要</b-form-radio>
                 <b-form-radio value="notNeed">不需要</b-form-radio>
               </b-form-radio-group>
+            </form>
+          </b-modal>
+          <b-nav-item v-b-modal.config>設定</b-nav-item>
+          <b-modal id="config" title="設定" ok-only="true" ok-title="儲存" @ok="saveConfig" @shown="getConfig">
+            <form>
+              便當開放領取時間：<br/>
+              開始：<b-form-input type="datetime" v-model="config.lunchBox.start"/>
+              結束：<b-form-input type="datetime" v-model="config.lunchBox.end"/>
+              <br/>
+              晚宴開放進場時間：<br/>
+              開始：<b-form-input type="datetime" v-model="config.dinner.start"/>
+              結束：<b-form-input type="datetime" v-model="config.dinner.end"/>
+              <br/>
+              餐盒開放領取時間：<br/>
+              開始：<b-form-input type="datetime" v-model="config.lunchBox2.start"/>
+              結束：<b-form-input type="datetime" v-model="config.lunchBox2.end"/>
             </form>
           </b-modal>
         </b-navbar-nav>
@@ -132,7 +148,8 @@ export default {
         dinner: "",
         lunchBox2: ""
       },
-      stopUpdate: false
+      stopUpdate: false,
+      config: null
     };
   },
   created() {
@@ -144,6 +161,13 @@ export default {
     }, 5000);
   },
   methods: {
+    async getConfig(){
+      const res = await axios.get(`/api/config`);
+      this.config = res.data;
+    },
+    async saveConfig(){
+      const res = await axios.post(`/api/config`, this.config);
+    },
     dataPreProcess() {
       this.items.forEach(element => {
         if (element.lunchBox === "notNeed") element.lunchBox = "不需要";

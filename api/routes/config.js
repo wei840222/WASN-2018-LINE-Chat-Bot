@@ -39,8 +39,6 @@ router.post('/config', jsonParser, function (req, res) {
   else {
     console.log(req.body);
     Config.find(function (err, data) {
-      console.log(err);
-      console.log(data);
       if (err) res.send(500, err);
       else if (data.length == 0) {
         var newData = new Config({
@@ -51,7 +49,6 @@ router.post('/config', jsonParser, function (req, res) {
         newData.save(function (err, newData) {
           if (err) res.send(500, err);
           else res.json(newData);
-          console.log(newData);
         });
       }
       else {
