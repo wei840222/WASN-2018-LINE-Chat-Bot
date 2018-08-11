@@ -13,10 +13,12 @@ mongoose.model('Person', new Schema(
     name: String,
     name64: String,
     school: String,
-    email: String,
+    phone: String,
     checkin: String,
+    vegetarian: Boolean,
+    lunchBox: String,
     dinner: String,
-    lunchBox: String
+    lunchBox2: String
   }
 ));
 
@@ -42,10 +44,12 @@ router.post('/person', jsonParser, function (req, res) {
       name: req.body.name || "",
       name64: req.body.id ? Base64.encodeURI(req.body.name) : "",
       school: req.body.school || "",
-      email: req.body.email || "",
+      phone: req.body.phone || "",
       checkin: req.body.checkin || "",
+      vegetarian: req.body.vegetarian || false,
+      lunchBox: req.body.lunchBox || "",
       dinner: req.body.dinner || "",
-      lunchBox: req.body.lunchBox || ""
+      lunchBox2: req.body.lunchBox2 || ""
     });
     newData.save(function (err, newData) {
       if (err) res.send(500, err);
@@ -85,12 +89,16 @@ router.get('/person/:_id', jsonParser, function (req, res) {
     if (err) res.send(500, err);
     else {
       for (var att in req.query) {
-        if (att === 'dinner' && doc[att] !== '') {
+        if (att === 'lunchBox' && (doc[att] !== '' || doc[att] !== 'notNeed')) {
+          res.status(403).send('已經領過便當！')
+          return
+        }
+        if (att === 'dinner' && (doc[att] !== '' || doc[att] !== 'notNeed')) {
           res.status(403).send('已經參加過晚宴！')
           return
         }
-        if (att === 'lunchBox' && doc[att] !== '') {
-          res.status(403).send('已經領過便當！')
+        if (att === 'lunchBox2' && (doc[att] !== '' || doc[att] !== 'notNeed')) {
+          res.status(403).send('已經領過餐盒！')
           return
         }
       }
