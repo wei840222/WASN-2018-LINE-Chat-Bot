@@ -67,7 +67,7 @@
       </template>
       <template slot="edit" slot-scope="data">
         <b-button-group>
-          <b-button variant="primary" @click="save({_id:data.item._id, checkin:data.item.checkin, lunchBox:data.item.lunchBox, dinner:data.item.dinner})">儲存</b-button>
+          <b-button variant="primary" @click="save({ _id:data.item._id, checkin:data.item.checkin, lunchBox:data.item.lunchBox, dinner:data.item.dinner, lunchBox2:data.item.lunchBox2 })">儲存</b-button>
           <b-button variant="danger" @click="del(data.item._id)">刪除</b-button>
         </b-button-group>
       </template>
