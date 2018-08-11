@@ -86,9 +86,9 @@ router.get('/person/:_id', jsonParser, function (req, res) {
     else {
       for (var att in req.query) {
         if (att === 'dinner' && doc[att] !== '')
-          res.send(403, '已經參加過晚宴！')
+          res.status(403).send('已經參加過晚宴！')
         else if (att === 'lunchBox' && doc[att] !== '')
-          res.send(403, '已經領過便當！')
+          res.status(403).send('已經領過便當！')
         else
           doc[att] = req.query[att]
       }
