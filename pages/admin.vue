@@ -57,16 +57,13 @@
         {{ data.item.vegetarian ? '素' : '葷' }}
       </template>
       <template slot="lunchBox" slot-scope="data">
-        <div v-if="data.item.lunchBox === 'notNeed'">不需要</div>
-        <b-form-input v-else type="datetime" v-model="data.item.lunchBox" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
+        <b-form-input type="datetime" v-model="data.item.lunchBox" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
       </template>
       <template slot="dinner" slot-scope="data">
-        <div v-if="data.item.dinner === 'notNeed'">不需要</div>
-        <b-form-input v-else type="datetime" v-model="data.item.dinner" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
+        <b-form-input type="datetime" v-model="data.item.dinner" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
       </template>
       <template slot="lunchBox2" slot-scope="data">
-        <div v-if="data.item.lunchBox2 === 'notNeed'">不需要</div>
-        <b-form-input v-else type="datetime" v-model="data.item.lunchBox2" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
+        <b-form-input type="datetime" v-model="data.item.lunchBox2" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
       </template>
       <template slot="edit" slot-scope="data">
         <b-button-group>
@@ -139,6 +136,7 @@ export default {
     };
   },
   created() {
+    this.dataPreProcess();
     setInterval(() => {
       if (!this.stopUpdate) {
         this.update();
@@ -146,6 +144,13 @@ export default {
     }, 5000);
   },
   methods: {
+    dataPreProcess() {
+      this.data.forEach(element => {
+        if (element.lunchBox === "notNeed") element.lunchBox = "不需要";
+        if (element.dinner === "notNeed") element.dinner = "不參加";
+        if (element.lunchBox2 === "notNeed") element.lunchBox2 = "不需要";
+      });
+    },
     claerAddUser() {
       this.addUser = {
         id: "",
@@ -184,6 +189,7 @@ export default {
     async update() {
       const res = await axios.get(`/api/person`);
       this.items = res.data;
+      this.dataPreProcess();
     }
   }
 };
