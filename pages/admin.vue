@@ -176,7 +176,7 @@ export default {
   methods: {
     async getConfig() {
       const res = await axios.get(`/api/config`);
-      this.config = res.data;
+      this.config = res.data[0];
     },
     async saveConfig() {
       const res = await axios.post(`/api/config`, this.config);
