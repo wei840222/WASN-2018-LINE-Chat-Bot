@@ -2,6 +2,7 @@ const { Router } = require('express')
 const router = Router()
 var bodyParser = require('body-parser')
 var mongoose = require('mongoose');
+var Base64 = require('js-base64').Base64;
 
 mongoose.connect(process.env.MONGOLAB_URI);
 var Schema = mongoose.Schema;
@@ -18,7 +19,8 @@ mongoose.model('Config', new Schema(
     lunchBox2: {
       start: String,
       end: String
-    }
+    },
+    admins: [{ userName: String, passwd: String }]
   }
 ));
 
@@ -44,7 +46,8 @@ router.post('/config', jsonParser, function (req, res) {
         var newData = new Config({
           lunchBox: req.body.lunchBox || {},
           dinner: req.body.dinner || {},
-          lunchBox2: req.body.lunchBox2 || {}
+          lunchBox2: req.body.lunchBox2 || {},
+          admins: []
         });
         newData.save(function (err, newData) {
           if (err) res.send(500, err);
@@ -56,12 +59,55 @@ router.post('/config', jsonParser, function (req, res) {
           if (err) res.send(500, err);
           else {
             for (var att in req.body) {
+              if (att === 'admins') continue
               doc[att] = req.body[att]
             }
             doc.save(function (err, doc) {
               if (err) res.send(500, err);
               else res.json(doc);
             });
+          }
+        })
+      }
+    });
+  }
+});
+
+router.post('/config/admins', jsonParser, function (req, res) {
+  if (!req.body || !req.body.userName || !req.body.passwd) return res.sendStatus(400)
+  else {
+    console.log(req.body);
+    Config.find(function (err, data) {
+      if (err) res.send(500, err);
+      else {
+        Config.findById(data[0]._id, function (err, doc) {
+          if (err) res.send(500, err);
+          else {
+            doc.admins.push({ userName: req.body.userName, passwd: req.body.passwd })
+            doc.save(function (err, doc) {
+              if (err) res.send(500, err);
+              else res.json(doc);
+            });
+          }
+        })
+      }
+    });
+  }
+});
+
+router.post('/config/admins/auth', jsonParser, function (req, res) {
+  if (!req.body || !req.body.userName || !req.body.passwd) return res.sendStatus(400)
+  else {
+    console.log(req.body);
+    Config.find(function (err, data) {
+      if (err) res.send(500, err);
+      else {
+        Config.findById(data[0]._id, function (err, doc) {
+          if (err) res.send(500, err);
+          else {
+            const user = doc.admins.filter(admin => admin.userName === req.body.userName)
+            if (user.length === 0 || !user[0].passwd === req.body.passwd) res.send(401);
+            else res.json({ userName: user[0].userName, accessToken: Base64.encodeURI(user[0].userName + '.' + user[0].passwd) })
           }
         })
       }
