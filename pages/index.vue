@@ -2,7 +2,7 @@
   <b-container fluid>
     <b-navbar toggleable="md" type="dark" variant="info">
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-      <b-navbar-brand><img href="/" src="logo-white.png" style="height: 30px; margin-top: -10px; margin-right: 10px;"/>WASN 2018</b-navbar-brand>
+      <b-navbar-brand><img src="logo-white.png" style="height: 30px; margin-top: -10px; margin-right: 10px;"/>WASN 2018</b-navbar-brand>
       <b-modal v-model="loginShow" title="登入" ok-only="true" ok-title="登入" @ok="login">
         <b-form-group :description="loginMsg">
           <b-form-input id="userName" type="text" v-model="userName" required placeholder="帳號"/>
