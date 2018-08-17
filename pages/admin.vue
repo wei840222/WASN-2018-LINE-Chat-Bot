@@ -173,8 +173,8 @@ export default {
           userName: userInfo.split(".")[0],
           passwd: userInfo.split(".")[1]
         });
-        if (auth.data.accessToken !== this.accessToken)
-          this.$router.replace("/");
+        if (auth.data.accessToken === this.accessToken) this.login = true;
+        else this.$router.replace("/");
       } catch (err) {
         console.log(err);
         this.$router.replace("/");
@@ -183,7 +183,6 @@ export default {
       console.log(err);
       this.$router.replace("/");
     }
-    this.login = true;
     this.dataPreProcess();
     setInterval(() => {
       if (!this.stopUpdate) {
