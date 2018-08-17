@@ -73,24 +73,23 @@ export default {
       userData: res.data[0],
       // 方碼科技 QR Code 產生 API https://www.funcode-tech.com/QR_Code_Generator_API.html
       qrCodeApi:
-        "http://www.funcode-tech.com/Encoder_Service/img.aspx?custid=1&username=public&codetype=QR&EClevel=0&data=",
-      personUpdateApi: "https://wasn2018tw-bot.herokuapp.com/api/person/"
+        "http://www.funcode-tech.com/Encoder_Service/img.aspx?custid=1&username=public&codetype=QR&EClevel=0&data="
     };
   },
   computed: {
     qrCodeUrlLunchBox() {
       return this.userData
-        ? `${this.qrCodeApi}${this.personUpdateApi}${this.userData._id}?lunchBox=${this.now}`
+        ? `${this.qrCodeApi}{id:${this.userData._id},lunchBox:${this.now}}`
         : "";
     },
     qrCodeUrlDinner() {
       return this.userData
-        ? `${this.qrCodeApi}${this.personUpdateApi}${this.userData._id}?dinner=${this.now}`
+        ? `${this.qrCodeApi}{id:${this.userData._id},dinner:${this.now}}`
         : "";
     },
     qrCodeUrlLunchBox2() {
       return this.userData
-        ? `${this.qrCodeApi}${this.personUpdateApi}${this.userData._id}?lunchBox2=${this.now}`
+        ? `${this.qrCodeApi}{id:${this.userData._id},lunchBox2:${this.now}}`
         : "";
     }
   }

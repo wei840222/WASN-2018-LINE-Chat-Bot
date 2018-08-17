@@ -7,7 +7,7 @@
         <b-nav-form>
           <b-form-group horizontal>
             <b-input-group>
-              <b-form-input v-model="filter" placeholder="輸入 QR Code 資料" />
+              <b-form-input v-model="filter" placeholder="QR Code 資料" />
               <b-input-group-append>
                 <b-btn :disabled="!filter" @click="filter = ''">執行</b-btn>
               </b-input-group-append>
