@@ -1,6 +1,9 @@
 <template>
-  <b-container>
-    QR Code 掃描
+  <b-container fluid>
+    <b-navbar toggleable="md" type="dark" variant="info">
+      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+      <b-navbar-brand><img href="/" src="logo-white.png" style="height: 30px; margin-top: -10px; margin-right: 10px;"/>QR Code 掃描</b-navbar-brand>
+    </b-navbar>
   </b-container>
 </template>
 
@@ -22,7 +25,6 @@ export default {
           userName: userInfo.split(".")[0],
           passwd: userInfo.split(".")[1]
         });
-        console.log(res);
         if (res.data.accessToken === this.accessToken) this.login = true;
         else this.$router.replace("/");
       } catch (err) {

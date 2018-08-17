@@ -2,7 +2,7 @@
   <b-container fluid>
     <b-navbar toggleable="md" type="dark" variant="info">
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-      <b-navbar-brand><img src="logo-white.png" style="height: 30px; margin-top: -10px; margin-right: 10px;"/>大會人員</b-navbar-brand>
+      <b-navbar-brand><img href="/" src="logo-white.png" style="height: 30px; margin-top: -10px; margin-right: 10px;"/>大會人員</b-navbar-brand>
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav>
           <b-nav-item v-b-modal.add>新增</b-nav-item>
@@ -174,7 +174,6 @@ export default {
           userName: userInfo.split(".")[0],
           passwd: userInfo.split(".")[1]
         });
-        console.log(res);
         if (res.data.accessToken === this.accessToken) this.login = true;
         else this.$router.replace("/");
       } catch (err) {
