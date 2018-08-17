@@ -169,11 +169,12 @@ export default {
     try {
       const userInfo = atob(this.accessToken);
       try {
-        const auth = await axios.post("/api/config/admins/auth", {
+        const res = await axios.post("/api/config/admins/auth", {
           userName: userInfo.split(".")[0],
           passwd: userInfo.split(".")[1]
         });
-        if (auth.data.accessToken === this.accessToken) this.login = true;
+        console.log(res);
+        if (res.data.accessToken === this.accessToken) this.login = true;
         else this.$router.replace("/");
       } catch (err) {
         console.log(err);
