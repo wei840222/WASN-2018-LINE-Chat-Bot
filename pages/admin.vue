@@ -50,6 +50,7 @@
               結束：<b-form-input type="datetime" v-model="config.lunchBox2.end"/>
             </form>
           </b-modal>
+          <b-nav-item :href="'/qrCodeScan?accessToken=' + accessToken">QR Code 掃描</b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <b-nav-form>
