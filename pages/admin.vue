@@ -95,9 +95,10 @@
 import axios from "../plugins/axios";
 
 export default {
-  async asyncData() {
+  async asyncData(context) {
     const res = await axios.get(`/api/person`);
     return {
+      accessToken: context.query.accessToken,
       items: res.data,
       fields: {
         id: {
@@ -163,7 +164,20 @@ export default {
       }
     };
   },
-  created() {
+  async created() {
+    if (!this.accessToken) this.$router.replace({ path: "/" });
+    const userInfo = atob(this.accessToken);
+    try {
+      const auth = await axios.post("/api/config/admins/auth", {
+        userName: userInfo.split(".")[0],
+        passwd: userInfo.split(".")[1]
+      });
+      if (auth.data.accessToken !== this.accessToken)
+        this.$router.replace({ path: "/" });
+    } catch (err) {
+      console.log(err);
+      this.$router.replace({ path: "/" });
+    }
     this.dataPreProcess();
     setInterval(() => {
       if (!this.stopUpdate) {

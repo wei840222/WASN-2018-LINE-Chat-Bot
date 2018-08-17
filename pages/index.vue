@@ -29,6 +29,7 @@ export default {
           passwd: this.passwd
         })
         .then(res => {
+          console.log(err);
           if (res.status === 200) {
             this.$router.push({
               path: "/admin",
