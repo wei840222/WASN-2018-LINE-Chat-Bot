@@ -106,7 +106,8 @@ router.post('/config/admins/auth', jsonParser, function (req, res) {
           if (err) res.send(500, err);
           else {
             const user = doc.admins.filter(admin => admin.userName === req.body.userName)
-            if (user.length === 0 || !user[0].passwd === req.body.passwd) res.send(401);
+            console.log(user[0])
+            if (user.length === 0 || user[0].passwd !== req.body.passwd) res.send(401);
             else res.json({ userName: user[0].userName, accessToken: Base64.encodeURI(user[0].userName + '.' + user[0].passwd) })
           }
         })
