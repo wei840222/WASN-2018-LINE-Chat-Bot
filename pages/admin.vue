@@ -65,7 +65,7 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <b-table :fields="fields" :items="items" sort-by="id" :filter="filter">
+    <b-table v-if="login" :fields="fields" :items="items" sort-by="id" :filter="filter">
       <template slot="checkin" slot-scope="data">
         <b-form-input type="datetime" v-model="data.item.checkin" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
       </template>
@@ -99,6 +99,7 @@ export default {
     const res = await axios.get(`/api/person`);
     return {
       accessToken: context.query.accessToken,
+      login: false,
       items: res.data,
       fields: {
         id: {
@@ -165,19 +166,24 @@ export default {
     };
   },
   async created() {
-    if (!this.accessToken) this.$router.replace({ path: "/" });
-    const userInfo = atob(this.accessToken);
     try {
-      const auth = await axios.post("/api/config/admins/auth", {
-        userName: userInfo.split(".")[0],
-        passwd: userInfo.split(".")[1]
-      });
-      if (auth.data.accessToken !== this.accessToken)
-        this.$router.replace({ path: "/" });
+      const userInfo = atob(this.accessToken);
+      try {
+        const auth = await axios.post("/api/config/admins/auth", {
+          userName: userInfo.split(".")[0],
+          passwd: userInfo.split(".")[1]
+        });
+        if (auth.data.accessToken !== this.accessToken)
+          this.$router.replace("/");
+      } catch (err) {
+        console.log(err);
+        this.$router.replace("/");
+      }
     } catch (err) {
       console.log(err);
-      this.$router.replace({ path: "/" });
+      this.$router.replace("/");
     }
+    this.login = true;
     this.dataPreProcess();
     setInterval(() => {
       if (!this.stopUpdate) {
