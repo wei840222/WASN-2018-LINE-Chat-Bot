@@ -80,23 +80,17 @@ export default {
   computed: {
     qrCodeUrlLunchBox() {
       return this.userData
-        ? `${this.qrCodeApi}${this.personUpdateApi}${
-            this.userData._id
-          }?lunchBox=${this.now}`
+        ? `${this.qrCodeApi}${this.personUpdateApi}${this.userData._id}?lunchBox=${this.now}`
         : "";
     },
     qrCodeUrlDinner() {
       return this.userData
-        ? `${this.qrCodeApi}${this.personUpdateApi}${
-            this.userData._id
-          }?dinner=${this.now}`
+        ? `${this.qrCodeApi}${this.personUpdateApi}${this.userData._id}?dinner=${this.now}`
         : "";
     },
     qrCodeUrlLunchBox2() {
       return this.userData
-        ? `${this.qrCodeApi}${this.personUpdateApi}${
-            this.userData._id
-          }?lunchBox2=${this.now}`
+        ? `${this.qrCodeApi}${this.personUpdateApi}${this.userData._id}?lunchBox2=${this.now}`
         : "";
     }
   }
