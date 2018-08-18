@@ -5,10 +5,12 @@
       <p class="card-text">
         大會編號：{{ userData.id }}<br/>
         單位：{{ userData.school }}<br/>
-        e-mail：{{ userData.email }}<br/>
+        電話/手機：{{ userData.phone }}<br/>
         報到：{{ userData.checkin === "" ? "尚未報到" : "已報到 " + userData.checkin}}<br/>
+        葷/素：{{ userData.vegetarian ? '素' : '葷' }}<br/>
         便當：{{ userData.lunchBox === "" ? "尚未領取" : "已領取 " + userData.lunchBox }}<br/>
-        晚宴：{{ userData.dinner === "" ? "尚未參加" : "已參加 " + userData.dinner }}</p>
+        晚宴：{{ userData.dinner === "" ? "尚未參加" : "已參加 " + userData.dinner }}<br/>
+        餐盒：{{ userData.lunchBox2 === "" ? "尚未領取" : "已領取 " + userData.lunchBox2 }}</p>
       </b-card>
     </div>
     <div v-else>請報到後再查看</div>

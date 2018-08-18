@@ -2,7 +2,7 @@
   <b-container fluid>
     <b-navbar toggleable="md" type="dark" variant="info">
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-      <b-navbar-brand>大會人員</b-navbar-brand>
+      <b-navbar-brand><img src="logo-white.png" style="height: 30px; margin-top: -10px; margin-right: 10px;"/>大會人員</b-navbar-brand>
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav>
           <b-nav-item v-b-modal.add>新增</b-nav-item>
@@ -50,6 +50,7 @@
               結束：<b-form-input type="datetime" v-model="config.lunchBox2.end"/>
             </form>
           </b-modal>
+          <b-nav-item :href="'/qrCodeScan?accessToken=' + accessToken">QR Code 掃描</b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <b-nav-form>
@@ -65,7 +66,7 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <b-table :fields="fields" :items="items" sort-by="id" :filter="filter">
+    <b-table v-if="login" :fields="fields" :items="items" sort-by="id" :filter="filter">
       <template slot="checkin" slot-scope="data">
         <b-form-input type="datetime" v-model="data.item.checkin" @focus.native="stopUpdate = true" @blur.native="stopUpdate = false"/>
       </template>
@@ -93,13 +94,13 @@
 
 <script>
 import axios from "../plugins/axios";
-import { json } from "body-parser";
-import { setInterval } from "timers";
 
 export default {
-  async asyncData() {
+  async asyncData(context) {
     const res = await axios.get(`/api/person`);
     return {
+      accessToken: context.query.accessToken,
+      login: false,
       items: res.data,
       fields: {
         id: {
@@ -165,7 +166,24 @@ export default {
       }
     };
   },
-  created() {
+  async created() {
+    try {
+      const userInfo = atob(this.accessToken);
+      try {
+        const res = await axios.post("/api/config/admins/auth", {
+          userName: userInfo.split(".")[0],
+          passwd: userInfo.split(".")[1]
+        });
+        if (res.data.accessToken === this.accessToken) this.login = true;
+        else this.$router.replace("/");
+      } catch (err) {
+        console.log(err);
+        this.$router.replace("/");
+      }
+    } catch (err) {
+      console.log(err);
+      this.$router.replace("/");
+    }
     this.dataPreProcess();
     setInterval(() => {
       if (!this.stopUpdate) {
@@ -182,11 +200,61 @@ export default {
       const res = await axios.post(`/api/config`, this.config);
     },
     dataPreProcess() {
+      let person = 0;
+      let checkin = 0;
+      let lunchBox = 0;
+      let lunchBoxVegetarian = 0;
+      let lunchBoxGot = 0;
+      let lunchBoxVegetarianGot = 0;
+      let dinner = 0;
+      let dinnerVegetarian = 0;
+      let dinnerGot = 0;
+      let dinnerVegetarianGot = 0;
+      let lunchBox2 = 0;
+      let lunchBox2Vegetarian = 0;
+      let lunchBox2Got = 0;
+      let lunchBox2VegetarianGot = 0;
       this.items.forEach(element => {
-        if (element.lunchBox === "notNeed") element.lunchBox = "不需要";
-        if (element.dinner === "notNeed") element.dinner = "不參加";
-        if (element.lunchBox2 === "notNeed") element.lunchBox2 = "不需要";
+        person++;
+        if (element.checkin !== "") checkin++;
+        if (element.vegetarian) {
+          if (element.lunchBox === "notNeed") element.lunchBox = "不需要";
+          else {
+            lunchBoxVegetarian++;
+            if (element.lunchBox !== "") lunchBoxVegetarianGot++;
+          }
+          if (element.dinner === "notNeed") element.dinner = "不參加";
+          else {
+            dinnerVegetarian++;
+            if (element.dinner !== "") dinnerVegetarianGot++;
+          }
+          if (element.lunchBox2 === "notNeed") element.lunchBox2 = "不需要";
+          else {
+            lunchBox2Vegetarian++;
+            if (element.lunchBox2 !== "") lunchBox2VegetarianGot++;
+          }
+        } else {
+          if (element.lunchBox === "notNeed") element.lunchBox = "不需要";
+          else {
+            lunchBox++;
+            if (element.lunchBox !== "") lunchBoxGot++;
+          }
+          if (element.dinner === "notNeed") element.dinner = "不參加";
+          else {
+            dinner++;
+            if (element.dinner !== "") dinnerGot++;
+          }
+          if (element.lunchBox2 === "notNeed") element.lunchBox2 = "不需要";
+          else {
+            lunchBox2++;
+            if (element.lunchBox2 !== "") lunchBox2Got++;
+          }
+        }
       });
+      this.fields.checkin = "報到 " + checkin + "/" + person;
+      this.fields.lunchBox = "便當 葷" + lunchBoxGot + "/" + lunchBox + " 素" + lunchBoxVegetarianGot + "/" + lunchBoxVegetarian;
+      this.fields.dinner = "晚宴 葷" + dinnerGot + "/" + dinner + " 素" + dinnerVegetarianGot + "/" + dinnerVegetarian;
+      this.fields.lunchBox2 = "餐盒 葷" + lunchBox2Got + "/" + lunchBox2 + " 素" + lunchBox2VegetarianGot + "/" + lunchBox2Vegetarian;
     },
     claerAddUser() {
       this.addUser = {
