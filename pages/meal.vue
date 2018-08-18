@@ -8,7 +8,8 @@
         </div>
       </b-card>
       <b-card title="午餐便當餐券" v-else>
-        <p class="card-text">渴望會館-B1-綠灣餐廳<br/>(尚未開放或未購買餐券)</p>
+        <p class="card-text">渴望會館-B1-綠灣餐廳</p>
+        <footer class="blockquote-footer">尚未開放或未購買餐券</footer>
         <div slot="footer">
           <small class="text-muted">2018/8/26 11:30~13:00</small>
         </div>
@@ -21,7 +22,8 @@
         </div>
       </b-card>
       <b-card title="晚宴餐券" v-else>
-        <p class="card-text">渴望會館-B1-渴望餐廳<br/>(尚未開放或未購買餐券)</p>
+        <p class="card-text">渴望會館-B1-渴望餐廳</p>
+        <footer class="blockquote-footer">尚未開放或未購買餐券</footer>
         <div slot="footer">
           <small class="text-muted">2018/8/26 18:30~20:30</small>
         </div>
@@ -34,7 +36,8 @@
         </div>
       </b-card>
       <b-card title="餐盒券" v-else>
-        <p class="card-text">渴望會館-2F-國際會議廳-外廳<br/>(尚未開放或未購買餐券)</p>
+        <p class="card-text">渴望會館-2F-國際會議廳-外廳</p>
+        <footer class="blockquote-footer">尚未開放或未購買餐券</footer>
         <div slot="footer">
           <small class="text-muted">2018/8/27 12:00~12:15</small>
         </div>
