@@ -107,7 +107,7 @@ export default {
           this.userMsg = err.response.data;
         }
       }
-      else this.qrCodeDataString = "";
+      this.qrCodeDataString = "";
     }
   }
 };
