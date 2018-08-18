@@ -253,8 +253,8 @@ export default {
       });
       this.fields.checkin = "報到 " + checkin + "/" + person;
       this.fields.lunchBox = "便當 葷" + lunchBoxGot + "/" + lunchBox + " 素" + lunchBoxVegetarianGot + "/" + lunchBoxVegetarian;
-      this.fields.lunchBox = "晚宴 葷" + dinnerGot + "/" + dinner + " 素" + dinnerVegetarianGot + "/" + dinnerVegetarian;
-      this.fields.lunchBox = "餐盒 葷" + lunchBox2Got + "/" + lunchBox2 + " 素" + lunchBox2VegetarianGot + "/" + lunchBox2Vegetarian;
+      this.fields.dinner = "晚宴 葷" + dinnerGot + "/" + dinner + " 素" + dinnerVegetarianGot + "/" + dinnerVegetarian;
+      this.fields.lunchBox2 = "餐盒 葷" + lunchBox2Got + "/" + lunchBox2 + " 素" + lunchBox2VegetarianGot + "/" + lunchBox2Vegetarian;
     },
     claerAddUser() {
       this.addUser = {
