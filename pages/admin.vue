@@ -200,11 +200,61 @@ export default {
       const res = await axios.post(`/api/config`, this.config);
     },
     dataPreProcess() {
+      let person = 0;
+      let checkin = 0;
+      let lunchBox = 0;
+      let lunchBoxVegetarian = 0;
+      let lunchBoxGot = 0;
+      let lunchBoxVegetarianGot = 0;
+      let dinner = 0;
+      let dinnerVegetarian = 0;
+      let dinnerGot = 0;
+      let dinnerVegetarianGot = 0;
+      let lunchBox2 = 0;
+      let lunchBox2Vegetarian = 0;
+      let lunchBox2Got = 0;
+      let lunchBox2VegetarianGot = 0;
       this.items.forEach(element => {
-        if (element.lunchBox === "notNeed") element.lunchBox = "不需要";
-        if (element.dinner === "notNeed") element.dinner = "不參加";
-        if (element.lunchBox2 === "notNeed") element.lunchBox2 = "不需要";
+        person++;
+        if (element.checkin !== "") checkin++;
+        if (element.vegetarian) {
+          if (element.lunchBox === "notNeed") element.lunchBox = "不需要";
+          else {
+            lunchBoxVegetarian++;
+            if (element.lunchBox !== "") lunchBoxVegetarianGot++;
+          }
+          if (element.dinner === "notNeed") element.dinner = "不參加";
+          else {
+            dinnerVegetarian++;
+            if (element.dinner !== "") dinnerVegetarianGot++;
+          }
+          if (element.lunchBox2 === "notNeed") element.lunchBox2 = "不需要";
+          else {
+            lunchBox2Vegetarian++;
+            if (element.lunchBox2 !== "") lunchBox2VegetarianGot++;
+          }
+        } else {
+          if (element.lunchBox === "notNeed") element.lunchBox = "不需要";
+          else {
+            lunchBox++;
+            if (element.lunchBox !== "") lunchBoxGot++;
+          }
+          if (element.dinner === "notNeed") element.dinner = "不參加";
+          else {
+            dinner++;
+            if (element.dinner !== "") dinnerGot++;
+          }
+          if (element.lunchBox2 === "notNeed") element.lunchBox2 = "不需要";
+          else {
+            lunchBox2++;
+            if (element.lunchBox2 !== "") lunchBox2Got++;
+          }
+        }
       });
+      this.fields.checkin = "報到 " + checkin + "/" + person;
+      this.fields.lunchBox = "便當 葷" + lunchBoxGot + "/" + lunchBox + " 素" + lunchBoxVegetarianGot + "/" + lunchBoxVegetarian;
+      this.fields.lunchBox = "晚宴 葷" + dinnerGot + "/" + dinner + " 素" + dinnerVegetarianGot + "/" + dinnerVegetarian;
+      this.fields.lunchBox = "餐盒 葷" + lunchBox2Got + "/" + lunchBox2 + " 素" + lunchBox2VegetarianGot + "/" + lunchBox2Vegetarian;
     },
     claerAddUser() {
       this.addUser = {
