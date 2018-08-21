@@ -10,7 +10,7 @@
           大會編號：{{ userData.id }}<br/>
           姓名：{{ userData.name }}<br/>
           單位：{{ userData.school }}<br/>
-          e-mail：{{ userData.email }}
+          電話/手機：{{ userData.phone }}
         </p>
         <b-button variant="secondary" @click="checkin">報到</b-button>
       </div>
